@@ -1,0 +1,230 @@
+/* Redefinições globais - Por padrão, o preenchimento e as bordas são adicionados
+no topo da largura e altura de um elemento, configurar o box-sizing para border-box significa que eles são incluídos dentro do tamanho definido (ou seja: retirados do lado de dentro em vez de adicionados do lado de fora) que
+é muito mais fácil de trabalhar. Margem e preenchimento são definidos como zero como
+os navegadores incluem valores padrão para eles, mas eles não são consistentes entre os navegadores, portanto, defini-los globalmente como zero e, em seguida, especificá-los em cada elemento, oferece maior controle do layout e garante que meu layout seja mantido em todos os navegadores e dispositivos. */ 
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    }
+    
+    body{
+    width:100%;
+    height:100vh;
+      
+    /* dar uma altura ao corpo geralmente é uma prática ruim, pois cortará o conteúdo se a altura não for suficiente, em vez disso, a altura deve ser indefinida e ditada pela quantidade de conteúdo, mas como não há conteúdo em nenhum de seus < divs> ele não teria nenhuma altura natural, então, por causa da demonstração, acabei de configurá-lo para preencher a altura da tela */
+      
+    background-color:lightgreen;
+    border:5px solid green;
+    display:flex;
+    flex-direction:column;
+      
+    /* O layout mais externo você tem um cabeçalho na parte superior, depois o principal no meio e o rodapé na parte inferior, então dê à página inteira um layout de coluna flexível e use o preenchimento para que eles não toquem nas bordas e no espaço para lá é o espaço entre eles */ 
+      
+    padding:15px;
+    gap:15px;
+      
+    }
+    
+    
+    /* Para o layout principal comece com os elementos mais externos e trabalhe para dentro, então nossos três elementos de nível superior são header, main e footer, então comece com apenas... 
+    
+    <header>
+    </header>
+    
+    <main>
+    </main>
+    
+    <footer>
+    </footer>
+    
+    ...no html e estilize-os primeiro. */ 
+    
+    /* A primeira coisa a notar é que o cabeçalho e o rodapé têm a mesma altura e o principal tem o dobro do tamanho deles, para conseguir isso podemos usar a propriedade flex. Este é um atalho para flex-grow (o elemento pode crescer?) flex-shrink (o elemento pode encolher?) e flex-basis (qual o tamanho que o elemento deve ter antes de crescer ou encolher?) A maneira mais curta de obter a divisão de tamanho o que queremos é dar a todos eles uma base flexível dos tamanhos desejados, então 25% 50% 25%, em seguida, um crescimento flexível de zero, já que não nos contentamos em quebrar essa proporção e, finalmente, um encolhimento flexível de 1 para que todos encolham do tamanho desejado uniformemente, isso permite que eles considerem o preenchimento e as lacunas. */ 
+    
+    header{
+    flex:0 1 25%;
+    }
+    
+    main{
+    flex:0 1 50%;
+    }
+    
+    footer{
+    flex:0 1 25%;
+    }  
+    
+    /* Em seguida, precisamos fazer com que pareçam corretos, obviamente, na prática, você voltaria e editaria cada elemento, mas vou escrevê-los repetidamente para manter a explicação linear. Então, começando com o cabeçalho, podemos adicionar borda, plano de fundo, ele tem três filhos em uma linha para que possamos adicionar flex novamente, o espaço da borda é o mesmo que o espaço do corpo, portanto, o preenchimento duplicado, mas o espaço entre os elementos é less, então precisamos de um valor menor para gap */ 
+    
+    header{
+    flex:0 1 25%;
+    background:lightblue;
+    border:5px solid blue;
+    display:flex;
+    gap:10px;
+    padding:15px;
+    }
+    
+    /* main tem um layout de coluna com flex-wrap, o primeiro elemento preenche uma coluna e os outros dois compartilham a segunda coluna e um pequeno intervalo entre eles. No entanto, o elemento principal em si tem muito pouco estilo, não há borda ou plano de fundo e os elementos internos tocam as bordas, ele só existe como um espaço reservado de layout. */
+    
+    main{
+    flex:0 1 50%;
+    display:flex;
+    flex-direction:column;
+    flex-wrap:wrap;
+    gap:10px;
+    }
+    
+    /* Finalmente o rodapé que é basicamente o mesmo que o cabeçalho, o fundo e a borda precisam ser adicionados, o layout é uma linha flexível, desta vez com preenchimento menor e espaço ainda menor */ 
+    
+    footer{
+    flex:0 1 25%;
+    background:lightblue;
+    border:5px solid blue;
+    display:flex;
+    gap:5px;
+    padding:10px;
+    }
+    
+    /* Agora é voltar ao html para adicionar os filhos a cada elemento, normalmente eu começaria no topo com <header> mas como <main> não aparece sem filhos, pois não tem estilo em si, vou comece por aí, pois é mais fácil ver como está progredindo com conteúdo visível lá. */  
+    
+    /* Podemos usar <section>s para os três elementos, a maior parte do estilo é o mesmo em todos os três, então podemos apenas estilizá-los como section{...} no entanto, o primeiro é distinto por ser maior que os outros dois, então damos a isso uma classe para então sobrescrever com as coisas que o tornam distinto. (É mais fácil entender seu código se você voltar para editá-lo se usar classes descritivas, portanto, como o que precisará de estilo individual é a altura total, darei uma classe de 'coluna completa') ...
+    
+    <header>
+    </header>
+    
+    <main>
+      <section class="full-column"></section>
+      <section></section>
+      <section></section>  
+    </main>
+    
+    <footer>
+    </footer>
+    
+    */  
+    
+    section{
+    flex:1 1 0;
+    background-color:pink;
+    border:5px solid darkred;
+    }
+    
+    /* Então começamos com o mesmo flex:1 1 0; como antes, então todos eles começam em zero e crescem uniformemente, então substituem apenas o primeiro (aquele com a classe de coluna completa) que não pode crescer ou diminuir e tem que ser 100%, que já que estamos usar coluna como flex-direction no main tem 100% de altura, então temos um layout de duas colunas, com a primeira preenchendo uma coluna e as outras duas compartilhando uniformemente */ 
+    
+    section.full-column{
+    flex: 0 0 100%;
+    }
+    
+    /* Em seguida, o cabeçalho, que contém três divs. Na prática, estes poderiam dar aulas descrevendo seu papel. Em um cabeçalho, eles provavelmente são um logotipo da empresa, então <div class="logo"> um título, então <div class="title"> e um menu de navegação que tem o nome semântico de apenas <nav>. Mas como não podemos saber que estão vazios e é apenas layout na atribuição, vou atribuir classes com base na posição ...
+    
+    <header>
+      <div class="header-left"></div>
+      <div class="header-center"></div>
+      <div class="header-right"></div>  
+    </header>
+    
+    <main>
+      <section class="full-column"></section>
+      <section></section>
+      <section></section>  
+    </main>
+    
+    <footer>
+    </footer>
+    
+    Agora, novamente, eles têm muitos estilos compartilhados (na verdade, o primeiro e o último realmente não precisam de classes, pois não têm estilos individuais, mas quando estou usando <div>s em vez de elementos nomeados, gosto de usar classes para identificar que é qual, então é mais fácil encontrar o ponto certo ao adicionar novo conteúdo) então antes de se preocupar com as partes exclusivas, podemos adicionar estilos gerais apenas usando header > div{...} */ 
+    
+    header > div{
+    flex: 0 1 calc(100% / 3);
+    background:peachpuff;
+    border:5px solid deeppink;
+    }
+    
+    /* Agora, novamente, temos o cenário em que não queremos flex-grow, pois estamos declarando o tamanho que queremos, mas permitirá que o shrink acomode lacunas e preenchimento. No entanto, desta vez eles precisam ter 1/3 da largura, o que não é uma divisão uniforme como 25% 50% 25% era. Obviamente, é 33,33...% e, para ser honesto, apenas 33% provavelmente serviria, já que as casas decimais provavelmente serão perdidas para flex-shrink de qualquer maneira. No entanto, telas muito grandes e à prova de futuro contra telas de alta resolução, é mais fácil usar calc() e deixar o computador fazer o trabalho, ele dividirá 100% da largura por três para o pixel mais próximo, independentemente do tamanho e da resolução da tela . É um pouco redundante com a tecnologia atual em três divs, mas como eu digo, isso prova o futuro do seu layout, onde 33% pode não estar perto o suficiente de 1/3 e é um truque útil para saber se, por exemplo, você queria 7 divs calc( 100%/7); é muito mais fácil do que descobrir o que 100/7 realmente é. */ 
+    
+    /* Agora só precisamos adicionar os atributos únicos ao div do meio, pois ele tem filhos, um pequeno espaço ao redor deles, mas sem espaço entre eles */  
+    
+    .header-center{
+    display:flex;
+    padding:5px;
+    }
+    
+    /* Em seguida, adicione esses filhos ao div do meio... 
+    
+    <header>
+      <div class="header-left"></div>
+      <div class="header-center">
+        <div></div>
+        <div></div>
+      </div>
+      <div class="header-right"></div>  
+    </header>
+    
+    <main>
+      <section class="full-column"></section>
+      <section></section>
+      <section></section>  
+    </main>
+    
+    <footer>
+    </footer>
+    
+    ...e estilize-os */
+    
+    .header-center > div{
+    flex: 0 1 50%;
+    border:5px solid red;
+    background-color:pink;
+    }
+    
+    /* Agora finalmente o conteúdo do rodapé, que tem quatro filhos de dois tipos, já que não sabemos o conteúdo apenas como eles se parecem vou usar descritores de aparência como a classe, então vamos chamar dois deles de azul e o outro dois rosa... 
+    
+    <header>
+      <div class="header-left"></div>
+      <div class="header-center">
+        <div></div>
+        <div></div>
+      </div>
+      <div class="header-right"></div>  
+    </header>
+    
+    <main>
+      <section class="full-column"></section>
+      <section></section>
+      <section></section>  
+    </main>
+    
+    <footer>
+      <div class="footer-blue"></div>
+      <div class="footer-pink"></div>
+      <div class="footer-pink"></div>
+      <div class="footer-blue"></div>
+    </footer>  
+    
+    ...Depois estilize-os */ 
+    
+    .footer-blue{
+    border:5px solid blue;
+    background-color:lightgrey;
+    }
+    
+    .footer-pink{
+    border:5px solid deeppink;
+    background-color:peachpuff;
+    }
+    
+    /* Agora há quatro filhos, mas dois deles são duas vezes maiores, então se os contarmos como doubles, há seis unidades de largura filho: 2 1 1 2, então novamente podemos obter a distribuição correta com flex basis calc( )s começando com calc(100% / 6) e então para os dois maiores multiplicando o resultado por dois então calc((100% / 6) * 2). Alternativamente, poderíamos dar a todos eles uma base flexível de zero para que todos eles comecem com largura zero, então dê aos menores um flex-grow de 1 e aos maiores um flex-grow de 2, isso significa que eles crescerão para preencher o espaço disponível, mas os maiores crescem duas vezes mais rápido. É realmente uma questão de preferência, pois neste caso ambos têm o mesmo resultado, mas como usei calc() da última vez, usarei grow dessa vez para demonstrar ambos em ação */
+    
+    .footer-blue{
+    flex:2 1 0;
+    border:5px solid blue;
+    background-color:lightgrey;
+    }
+    
+    .footer-pink{
+    flex:1 1 0;
+    border:5px solid deeppink;
+    background-color:peachpuff;
+    }
